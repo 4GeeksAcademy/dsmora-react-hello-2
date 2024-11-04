@@ -1,4 +1,17 @@
 
+.background-blue {
+    background-color: blue;
+}
+
+.paragraph {
+    font-size: 24px;
+    font-weight: 500;
+}
+
+.img-card {
+    max-height: 150px;
+}
+
 /* 
 
     You can write your own styles here...
