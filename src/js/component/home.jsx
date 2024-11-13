@@ -1,12 +1,8 @@
 import React, { useState } from "react";
-import { Card } from './card';
 //create your first component
 const Home = () => {
 
 	const [counter, setCounter] = useState(0);
-	console.log(counter, 'counter');
-	console.log(setCounter, 'setCounter');
-
 	return (
 		<div className="container-fluid p-4 text-center">
 			<h1>
@@ -15,9 +11,6 @@ const Home = () => {
 			<button onClick={() => setCounter(counter + 1)}>
 				Increment
 			</button>
-			<div>
-				<Card />
-			</div>
 		</div>
 	);
 };
