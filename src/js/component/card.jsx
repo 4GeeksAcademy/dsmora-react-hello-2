@@ -1,23 +1,62 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from 'react';
 
-// destructuring de objetos;
 
-// operador ternario 
+export const Card = () => {
+    const [values, setValues] = useState([1, 2, 3, 4, 5])
 
-// condicion ? respuesta si true : respuesta si false 
-
-export const Card = ({ title, description, image, stock }) => {
-
+    console.log(values)
     return (
-        <div className={`card ${active ? 'bg-danger-subtle' : ''}`} style={{ width: '18rem' }}>
-            {
-                active ? <img src={image} className="card-img-top img-card" alt="..." /> : null
-            }
-            <div className="card-body">
-                <h5 className="card-title">{title} stock: {stock}</h5>
-                <p className="card-text">{description}</p>
-                <a href="#" className="btn btn-primary">Active</a>
-            </div>
+        <div className={'bg-primary-subtle'} style={{ width: 300, height: 300 }}>
+            <ul>
+                {
+                    values.map(item => (
+                        <li className='d-flex' key={item}>
+                            <h6 className='me-2'>
+                                <b>{item}</b>. Item
+                            </h6>
+
+                            <i onClick={() => setValues((previus) => {
+                                const newArray = previus.filter(element => element !== item)
+                                return [...newArray];
+                            })}
+                                className='fa fa-trash'>
+                            </i>
+                        </li>
+                    ))
+                }
+            </ul>
+            <button onClick={() => setValues((previus) => {
+                const newValue = previus.length + 1;
+                const newArray = [...previus, newValue];
+                return newArray
+            })}>
+                Add list element
+            </button>
         </div>
     )
 }
+
+
+
+// <h3>{value.name}</h3>
+//             <h3>{value.age}</h3>
+//             <div className='p-3'>
+//                 <input
+//                     type='text'
+//                     placeholder='name'
+//                     value={value.name}
+//                     onChange={(e) => setValue((previus) => {
+//                         console.log(previus, 'prev');
+//                         return ({ ...previus, name: e.target.value })
+//                     })}
+//                 />
+//                 <input
+//                     placeholder='age'
+//                     type='number'
+//                     value={value.age}
+//                     onChange={(e) => setValue((previus) => {
+//                         console.log(previus, 'prev');
+//                         return ({ ...previus, age: e.target.value })
+//                     })}
+//                 />
+//             </div>
