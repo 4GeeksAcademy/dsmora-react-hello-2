@@ -4,17 +4,34 @@ const Home = () => {
 
 	const [inputValue, setInputValue] = useState('');
 	const [todos, setTodos] = useState([]);
+	const [user, setUser] = useState({ name: 'dsmora' })
 
 	useEffect(() => {
-		fetch('https://playground.4geeks.com/todo/users/dsmora')
-			.then(resp => resp.json())
-			.then(respJson => {
-				console.log(respJson)
-				console.log(respJson.todos)
-				const serverTodos = respJson.todos;
-				setTodos(serverTodos);
-			})
+		if (user && user.name) {
+			fetch(`https://playground.4geeks.com/todo/users/${user.name}`)
+				.then(resp => resp.json())
+				.then(respJson => {
+					console.log(respJson)
+					console.log(respJson.todos)
+					const serverTodos = respJson.todos;
+					setTodos(serverTodos);
+				})
+		}
+
+	}, [user])
+
+	useEffect(() => {
+		fetch('https://playground.4geeks.com/todo/users/dsmora', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		}).then(resp => resp.json()).then(respJson => setUser(respJson)).catch(() => {
+			setUser({ name: 'dsmora' })
+		});
 	}, [])
+
+
 
 	const createTodo = async (task) => {
 		await fetch('https://playground.4geeks.com/todo/todos/dsmora', {
@@ -33,7 +50,6 @@ const Home = () => {
 			});
 	}
 
-
 	const handleOnChange = (evt) => {
 		if (evt.key === 'Enter' && evt.target.value.trim() !== '') {
 			createTodo(evt.target.value)
@@ -46,9 +62,34 @@ const Home = () => {
 		setTodos([...newTodos])
 	}
 
+	const handleOnDeleteUser = async () => {
+		await fetch('https://playground.4geeks.com/todo/users/dsmora', {
+			method: 'DELETE'
+		}).then(() => setUser(null));
+	};
+
+	const deleteTask = (id) => {
+		return fetch(`https://playground.4geeks.com/todo/todos/${id}`, {
+			method: 'DELETE'
+		})
+	}
+
+	const deleteAllTask = async () => {
+		for (let i = 0; i <= todos.length; i++) {
+			deleteTask(todos[i].id).then()
+		}
+		const deleteAll = todos.map(item => deleteTask(item.id))
+		await Promise.all(deleteAll).then(() => setTodos([]));
+	}
+
+	if (!user || !todos) return <>No existe un usuario</>;
+
 	return (
 		<div className="container">
 			<div className="todos p-2">
+				<button onClick={() => deleteAllTask()}>
+					deleteAllTask
+				</button>
 				<div className="input-group input-group-sm mb-3 py-3 px-5">
 					<input value={inputValue}
 						type="text"
@@ -63,7 +104,7 @@ const Home = () => {
 								<div className="col" key={item.id}>
 									<div className="todoCard">
 										{item.label}
-										<i className="fa fa-trash ms-4" onClick={() => handleOnDelete(index)}></i>
+										<i className="fa fa-trash ms-4" onClick={() => deleteTask(item.id)}></i>
 									</div>
 								</div>
 							))
@@ -73,6 +114,9 @@ const Home = () => {
 				<h6 className="text-center">
 					Hay {todos.length} tareas pendientes
 				</h6>
+				<button onClick={() => handleOnDeleteUser()}>
+					Delete user
+				</button>
 			</div>
 
 		</div>
